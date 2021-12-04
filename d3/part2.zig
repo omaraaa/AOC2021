@@ -84,12 +84,10 @@ fn solution(buf: []const u8) !usize {
 pub fn main() !void {
     defer _ = gpa.deinit();
 
-    var allocator = &gpa.allocator;
-
     var file = try std.fs.cwd().openFile("input", .{});
     defer file.close();
 
-    var bytes = try file.readToEndAlloc(allocator, 1000000);
+    var bytes = try file.readToEndAlloc(&gpa.allocator, 1000000);
     defer allocator.free(bytes);
 
     std.debug.print("{}", .{try solution(bytes)});

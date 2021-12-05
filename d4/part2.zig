@@ -53,7 +53,7 @@ fn runBingo(nums: []const usize, boards: []Board) !Winner {
     return last_winner;
 }
 
-fn finalScore(winner: Winner) usize {
+fn getFinalScore(winner: Winner) usize {
     var sum: usize = 0;
     for (winner.board.cells) |row| {
         for (row) |c| {
@@ -132,7 +132,7 @@ fn solution(buf: []const u8) !usize {
         }
     }
     var winner = try runBingo(nums.items[0..], boards.items[0..]);
-    return finalScore(winner);
+    return getFinalScore(winner);
 }
 
 pub fn main() !void {

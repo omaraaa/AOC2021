@@ -4,8 +4,8 @@ var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const N = usize;
 
 const State = struct {
-    new: [2]usize = .{0} ** 2,
-    normal: [7]usize = .{0} ** 7,
+    new: [2]N = .{0} ** 2,
+    normal: [7]N = .{0} ** 7,
 };
 
 var s1: State = .{};
@@ -14,7 +14,7 @@ var s2: State = .{};
 var current = &s1;
 var next = &s2;
 
-fn run(days: usize) void {
+fn run(days: N) void {
     var d: usize = 0;
     while (d < days) : (d += 1) {
         next.* = .{};
@@ -45,8 +45,8 @@ fn run(days: usize) void {
     }
 }
 
-fn count() usize {
-    var c: usize = 0;
+fn count() N {
+    var c: N = 0;
     for (current.new) |f| {
         c += f;
     }

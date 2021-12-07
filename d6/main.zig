@@ -2,7 +2,6 @@ const std = @import("std");
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 
 const N = usize;
-
 const State = [9]N;
 
 var s1: State = std.mem.zeroes(State);

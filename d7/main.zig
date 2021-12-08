@@ -12,7 +12,9 @@ fn findGeometricMean(nums: []const N, min: N, max: N) N {
             fuel += if (n < i) i - n else n - i;
         }
 
-        if (fuel < min_fuel) min_fuel = fuel;
+        if (fuel < min_fuel) {
+            min_fuel = fuel;
+        }
     }
     return min_fuel;
 }
@@ -31,7 +33,9 @@ fn findGeometricMean2(nums: []const N, min: N, max: N) N {
             fuel += if (n < i) newFuel(i - n) else newFuel(n - i);
         }
 
-        if (fuel < min_fuel) min_fuel = fuel;
+        if (fuel < min_fuel) {
+            min_fuel = fuel;
+        }
     }
     return min_fuel;
 }
@@ -42,15 +46,25 @@ fn solution(buf: []const u8) ![2]N {
     defer nums.deinit();
     var max: N = 0;
     var min: N = std.math.maxInt(N);
+    var sum: N = 0;
 
     while (tokens.next()) |t| {
         var n = try std.fmt.parseInt(N, t, 10);
         try nums.append(n);
         if (n < min) min = n;
         if (n > max) max = n;
+        sum += n;
     }
 
-    return [2]N{ findGeometricMean(nums.items, min, max), findGeometricMean2(nums.items, min, max) };
+    var stddev: usize = 0;
+    var mean = sum / nums.items.len;
+
+    for (nums.items) |n| {
+        stddev += if (n < mean) mean - n else n - mean;
+    }
+    stddev /= nums.items.len - 1;
+
+    return [2]N{ findGeometricMean(nums.items, mean - stddev, mean + stddev), findGeometricMean2(nums.items, mean - stddev, mean + stddev) };
 }
 
 pub fn main() !void {

@@ -18,6 +18,8 @@ const Grid = struct {
     const Self = @This();
 
     points: std.AutoHashMap(POINT, N) = std.AutoHashMap(POINT, N).init(&gpa.allocator),
+    width: COORD = 0,
+    height: COORD = 0,
 
     pub fn deinit(self: *Self) void {
         self.points.deinit();
@@ -30,6 +32,12 @@ const Grid = struct {
 
     const Fold_Dir = enum { x, y };
     pub fn fold(self: *Self, comptime dir: Fold_Dir, at: COORD) !void {
+        if (dir == .x) {
+            self.width = at;
+        } else {
+            self.height = at;
+        }
+
         var itr = self.points.iterator();
         const C = struct { p: POINT, v: N };
         var buffer = std.ArrayList(C).init(&gpa.allocator);
@@ -66,25 +74,16 @@ const Grid = struct {
     }
 
     pub fn print(self: *Self) void {
-        var w: COORD = 40;
-        var h: COORD = 6;
-        var itr = self.points.iterator();
-        while (itr.next()) |e| {
-            var coord = toCoords(e.value_ptr.*);
-            if (coord[0] > w) w = coord[0];
-            if (coord[1] > h) h = coord[1];
-        }
-
         var y: COORD = 0;
-        while (y < h) : (y += 1) {
+        while (y < self.height) : (y += 1) {
             var x: COORD = 0;
-            while (x < w) : (x += 1) {
+            while (x < self.width) : (x += 1) {
                 var pos = toPoint(x, y);
                 var v = self.points.get(pos) orelse 0;
                 if (v > 0) {
-                    std.debug.print("8", .{});
+                    std.debug.print(" 8 ", .{});
                 } else {
-                    std.debug.print(" ", .{});
+                    std.debug.print("   ", .{});
                 }
             }
             std.debug.print("\n", .{});
